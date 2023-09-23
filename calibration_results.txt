@@ -1,0 +1,3 @@
+Best Focal Length: 25.800000000000082
+Best Sensor Width: 33.30000000000005
+Minimum Total Error: 6.200771587055613

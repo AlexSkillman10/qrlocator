@@ -11,8 +11,7 @@ def calculate_distance_to_camera(known_width, focal_length, per_width):
 
 def calculate_angle_and_map_2d(centroid_x, distance_inches, img_center):
     delta_x = centroid_x - img_center
-    angle = math.degrees(math.atan2(delta_x, distance_inches))
-    angle = 0  # dampen degree - temp fix for larger issue
+    angle = 0
     x = distance_inches * math.sin(math.radians(angle))
     y = distance_inches * math.cos(math.radians(angle))
     return angle, x, y
@@ -75,10 +74,10 @@ class QRLocator:
 
 
 if __name__ == "__main__":
-    FOCAL_LENGTH_MM = 26.0
-    SENSOR_WIDTH_MM = 36.0
-    QR_CODE_SIZE_INCHES = 5.4
-    IMAGE_PATH = r'calibration\dev_calibration_images\8ft.jpg'
+    FOCAL_LENGTH_MM = 25.8
+    SENSOR_WIDTH_MM = 33.3
+    QR_CODE_SIZE_INCHES = 7.93
+    IMAGE_PATH = r'calibration\test_images\IMG_0897.jpg'
     
     qr_locator = QRLocator(IMAGE_PATH, FOCAL_LENGTH_MM, SENSOR_WIDTH_MM, QR_CODE_SIZE_INCHES)
     qr_locator.show_visualization()
