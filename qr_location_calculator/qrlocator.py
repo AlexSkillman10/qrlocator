@@ -9,11 +9,11 @@ def convert_focal_length_to_pixels(focal_length_mm, image_width_pixels, sensor_w
 def calculate_distance_to_camera(known_width, focal_length, per_width):
     return (known_width * focal_length) / per_width
 
-def calculate_angle_and_map_2d(centroid_x, distance_inches, img_center):
+def calculate_angle_and_map_2d(centroid_x, distance_inches, img_center, image_width_pixels):
     delta_x = centroid_x - img_center
-    angle = 0
-    x = distance_inches * math.sin(math.radians(angle))
-    y = distance_inches * math.cos(math.radians(angle))
+    angle = math.degrees(math.atan(delta_x / image_width_pixels))
+    x = math.tan(math.radians(angle)) * distance_inches
+    y = distance_inches
     return angle, x, y
 
 class QRCode:
@@ -51,7 +51,7 @@ class QRLocator:
             per_width = cv2.norm(points[0], points[1])
             distance_mm = calculate_distance_to_camera(self.qr_code_size_in_mm, focal_length_pixels, per_width)
             distance_inches = distance_mm / 25.4
-            angle, x, y = calculate_angle_and_map_2d(centroid_x, distance_inches, self.img_center)
+            angle, x, y = calculate_angle_and_map_2d(centroid_x, distance_inches, self.img_center, self.image.shape[1])
             qr_code_obj = QRCode(qr_code.data.decode('utf-8'), angle, x, y)
             self.codes[qr_code_obj.data] = qr_code_obj
             
@@ -70,6 +70,7 @@ class QRLocator:
         plt.ylabel('Y (feet)')
         plt.legend(loc='lower left')
         plt.title('QR Code Location')
+        plt.axis('equal') 
         plt.show()
 
 
@@ -77,7 +78,9 @@ if __name__ == "__main__":
     FOCAL_LENGTH_MM = 25.8
     SENSOR_WIDTH_MM = 33.3
     QR_CODE_SIZE_INCHES = 7.93
-    IMAGE_PATH = r'calibration\test_images\IMG_0897.jpg'
+    # QR_CODE_SIZE_INCHES = 5.35
+    # IMAGE_PATH = r'calibration\test_images\IMG_0882.jpg'
+    IMAGE_PATH = r'calibration\dev_calibration_images\6ft.jpg'
     
     qr_locator = QRLocator(IMAGE_PATH, FOCAL_LENGTH_MM, SENSOR_WIDTH_MM, QR_CODE_SIZE_INCHES)
     qr_locator.show_visualization()
