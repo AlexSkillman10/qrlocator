@@ -25,7 +25,7 @@ def calibrate_qr_locator(calibration_images_folder):
 
         image_path = os.path.join(calibration_images_folder, image_name)
         calibration_images.append(
-            [image_name, QRLocator(image_path, 1, 1, 1, QR_CODE_SIZE_INCHES)])
+            [image_name, QRLocator(image_path, 1, 1, QR_CODE_SIZE_INCHES)])
         
     step_counts = [20, 10, 5, 2.5, 1, .5, .1, .05, .01]
     
@@ -57,8 +57,7 @@ def calibrate_qr_locator(calibration_images_folder):
                         image_name = calibration_section[0]
                         qr_locator = calibration_section[1]
 
-                        qr_locator.focal_length_mm = focal_length
-                        qr_locator.sensor_width_mm = sensor_width
+                        qr_locator.focal_ratio = focal_length / sensor_width
                         qr_locator.focal_angle_scalar = focal_angle_scalar
                         qr_locator.process_codes()
 
