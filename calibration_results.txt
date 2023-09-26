@@ -1,6 +1,4 @@
 Best Focal Ratio: 0.7747762957960492
-Best Focal Length: 68.83500000000001
-Best Sensor Width: 88.84500000000001
 Best Focal Angle Scalar: 1.3069
 Minimum Total Error: 13.607840782160856
 Best QR Code Details:

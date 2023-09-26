@@ -25,14 +25,14 @@ def calibrate_qr_locator(calibration_images_folder):
 
         image_path = os.path.join(calibration_images_folder, image_name)
         calibration_images.append(
-            [image_name, QRLocator(image_path, 1, 1, QR_CODE_SIZE_INCHES)])
+            [image_name, QRLocator(image_path, 1, 1, 1, QR_CODE_SIZE_INCHES)])
         
     step_counts = [20, 10, 5, 2.5, 1, .5, .1, .05, .01]
     
     best_focal_length = 51
     best_sensor_width = 51
     best_focal_angle_scalar = 1.1
-
+    best_z_focal_angle_scalar = 1.1
 
     for i in range(len(step_counts)):
 
@@ -43,53 +43,53 @@ def calibrate_qr_locator(calibration_images_folder):
         best_focal_length_loop = best_focal_length
         best_sensor_width_loop = best_sensor_width
         best_focal_angle_scalar_loop = best_focal_angle_scalar
+        best_z_focal_angle_scalar_loop = best_z_focal_angle_scalar
 
 
         for focal_length in np.arange(best_focal_length_loop-prev_step_count, best_focal_length_loop+prev_step_count, step_count):
             for sensor_width in np.arange(best_sensor_width_loop-prev_step_count, best_sensor_width_loop+prev_step_count, step_count):
                 for focal_angle_scalar in np.arange(best_focal_angle_scalar_loop-prev_step_count/50, best_focal_angle_scalar_loop+prev_step_count/50, step_count/50):
+                    for z_focal_angle_scalar in np.arange(best_z_focal_angle_scalar_loop-prev_step_count/50, best_z_focal_angle_scalar_loop+prev_step_count/50, step_count/50):        
+                        total_error = 0
+                        qr_code_details = []
 
-                    total_error = 0
-                    qr_code_details = []
+                        for calibration_section in calibration_images:
 
-                    for calibration_section in calibration_images:
+                            image_name = calibration_section[0]
+                            qr_locator = calibration_section[1]
 
-                        image_name = calibration_section[0]
-                        qr_locator = calibration_section[1]
+                            qr_locator.focal_ratio = focal_length / sensor_width
+                            qr_locator.x_focal_angle_scalar = focal_angle_scalar
+                            qr_locator.z_focal_angle_scalar = z_focal_angle_scalar
+                            qr_locator.process_codes()
 
-                        qr_locator.focal_ratio = focal_length / sensor_width
-                        qr_locator.focal_angle_scalar = focal_angle_scalar
-                        qr_locator.process_codes()
 
-                        real_y = int(image_name.replace('ft.jpg', '')) * 12
 
-                        qr_code_details.append(f"{image_name}")
+                            qr_code_details.append(f"{image_name}")
 
-                        for data, qr_code in qr_locator.codes.items():
-                            known_y = real_y
-                            known_x = calibration_data[data]['x']
-                            error = abs(qr_code.y - known_y) + abs(qr_code.x - known_x)
-                            total_error += error
-                            qr_code_details.append(
-                                f"QR Code: {data}, Error: {error}, Y: {qr_code.y}, Known Y: {known_y}, X: {qr_code.x}, Known X: {known_x}")
-                    
-                    if total_error < best_error:
-                        best_error = total_error
-                        best_focal_length = focal_length
-                        best_sensor_width = sensor_width
-                        best_focal_angle_scalar = focal_angle_scalar
-                        best_qr_code_details = qr_code_details
+                            for data, qr_code in qr_locator.codes.items():
+                                known_y = calibration_data[image_name][data]['y']
+                                known_x = calibration_data[image_name][data]['x']
+                                known_z = calibration_data[image_name][data]['z']
+                                error = abs(qr_code.y - known_y) + abs(qr_code.x - known_x) + abs(qr_code.z - known_z)
+                                total_error += error
+                                qr_code_details.append(
+                                    f"QR Code: {data}, Error: {error}, Y: {qr_code.y}, Known Y: {known_y}, X: {qr_code.x}, Known X: {known_x}, Z: {qr_code.z}, Known Z: {known_z}")
+                        
+                        if total_error < best_error:
+                            best_error = total_error
+                            best_focal_length = focal_length
+                            best_sensor_width = sensor_width
+                            best_focal_angle_scalar = focal_angle_scalar
+                            best_z_focal_angle_scalar = z_focal_angle_scalar
+                            best_qr_code_details = qr_code_details
 
-                    print(f"Focal Length: {focal_length}, Sensor Width: {sensor_width}, Focal Angle Scalar: {focal_angle_scalar}, Total Error: {total_error}")
-
+                        print(f"\rError: {round(best_error, 3)}, Focal Ratio: {best_focal_length / best_sensor_width}, Focal Angle Scalar: {best_focal_angle_scalar}, Z Scalar: {best_z_focal_angle_scalar}", end='', flush=True)
+    
     with open('calibration_results.txt', 'w') as file:
+        print( )
         file.write(f"Best Focal Ratio: {best_focal_length / best_sensor_width}\n")
         print(f"Best Focal Ratio: {best_focal_length / best_sensor_width}")
-        print(f"Best Focal Ratio: {best_sensor_width / best_focal_length}")
-        file.write(f"Best Focal Length: {best_focal_length}\n")
-        print(f"Best Focal Length: {best_focal_length}")
-        file.write(f"Best Sensor Width: {best_sensor_width}\n")
-        print(f"Best Sensor Width: {best_sensor_width}")
         file.write(f"Best Focal Angle Scalar: {best_focal_angle_scalar}\n")
         print(f"Best Focal Angle Scalar: {best_focal_angle_scalar}")
         file.write(f"Minimum Total Error: {best_error}\n")
@@ -103,4 +103,4 @@ def calibrate_qr_locator(calibration_images_folder):
 
 
 if __name__ == "__main__":
-    calibrate_qr_locator(r'calibration\dev_calibration_images')
+    calibrate_qr_locator(r'calibration\dev_calibration_images2')
