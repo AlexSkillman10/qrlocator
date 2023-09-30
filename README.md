@@ -1,7 +1,7 @@
 # QRlocator
 
 ## Overview
-This code provides a class named `QRlocator` that allows users to locate QR codes within 3D space given an image. It uses the OpenCV and Pyzbar libraries to scan, decode, and visualize the QR codes, but you can also use other QR code scanning libraries to get and then add the QR code information to the class. This class mainly provides the `X`, `Y`, and `Z` coordinates of the center point of a code, where `Y` is a horizontal axis parallel to the camera's direction, `X` is a horizontal axis perpendicular to the camera's direction, and `Z` is a vertical axis representing the codes height.
+This code provides a class named `QRlocator` that allows users to locate QR codes within 3D space given an image. It uses the OpenCV and Pyzbar libraries to scan and decode the QR codes, but you can also use other QR code scanning libraries to get and then add the QR code information to the class using `add_qr_code`. This class mainly provides the `X`, `Y`, and `Z` coordinates of the center point of a code, where `Y` is a horizontal axis parallel to the camera's direction, `X` is a horizontal axis perpendicular to the camera's direction, and `Z` is a vertical axis representing the codes height.
 
 
 ## How to Use
@@ -43,8 +43,8 @@ y_position = qr_locator.get_y_position('data', qr_code_size_mm)
 z_position = qr_locator.get_z_position('data', qr_code_size_mm)
 ```
 
-- `data` (str): The data of the specific QR code.
-- `qr_code_size_mm` (float): The actual size of the QR code in millimeters.
+- `data` (str): What appears when you scan the code. This is used to identify the code
+- `qr_code_size_mm` (float): The length of the QR code's sides in mm
 
 ### 5. Visualization
 To visualize the positions of the class QR codes in XY and XZ planes, run:
