@@ -1,9 +1,9 @@
 [build-system]
-requires = ["hatchling", cv2, math, matplotlib, pyzbar"]
+requires = ["hatchling", "opencv-python", "python-math", "matplotlib", "pyzbar"]
 build-backend = "hatchling.build"
 
 [project]
-name = "QRlocator_AlexSkillman10"
+name = "qrlocator"
 version = "0.1.0"
 authors = [
   { name="Alex Skillman", email="alexskillman10@gmail.com" },

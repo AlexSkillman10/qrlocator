@@ -7,7 +7,12 @@ add pictures
 
 ## Install
 ```
-pip something something
+pip install -i https://test.pypi.org/simple/ qrlocator 
+```
+
+## Homepage
+```
+https://test.pypi.org/project/qrlocator/
 ```
 
 ## Quick Start
