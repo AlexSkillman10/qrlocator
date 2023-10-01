@@ -5,14 +5,15 @@ This package provides a class named `QRlocator` that allows users to get the 3D 
 
 add pictures
 
-## Install
-```
-pip install -i https://test.pypi.org/simple/ qrlocator 
-```
-
 ## Homepage
 ```
 https://test.pypi.org/project/qrlocator/
+```
+
+## Install
+```
+pip install -i https://test.pypi.org/simple/ qrlocator 
+from qrlocator.QRlocator import QRlocator
 ```
 
 ## Quick Start
@@ -26,7 +27,7 @@ The creation of the QRlocator class requires 4 parameters. It is very likely tha
 ```python
 qr_locator = QRlocator(r'path_to_image', focal_ratio, x_focal_angle_scalar, z_focal_angle_scalar)
 qr_locator.scan_image()
-qr_locator.show_visualization(self, qr_code_side_length_mm)
+qr_locator.show_visualization(qr_code_side_length_mm)
 ```
 
 ## Functions
@@ -37,41 +38,41 @@ qr_locator.scan_image()
 Scans and saves the QR codes from the current image
 #
 ```python
-qr_locator.modify_image(self, image)
-qr_locator.modify_image_path(self, r'image_path')
+qr_locator.modify_image(image)
+qr_locator.modify_image_path(r'image_path')
 ```
 Used to modify the locator's current image
 #
 ```python
-qr_locator.get_y_position(self, data, qr_code_side_length_mm)
+qr_locator.get_y_position(data, qr_code_side_length_mm)
 ```
 Calculates and returns the Y coordinate (horizontal axis parallel to the camera's direction) of the QR code in inches.
 - `data` (str): The string of data present in your QR code
 - `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
 #
 ```python
-qr_locator.get_x_position(self, data, qr_code_side_length_mm)
+qr_locator.get_x_position(data, qr_code_side_length_mm)
 ```
 Calculates and returns the X coordinate (horizontal axis perpendicular to the camera's direction) of the QR code in inches.
 - `data` (str): The string of data present in your QR code
 - `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
 #
 ```python
-qr_locator.get_z_position(self, data, qr_code_side_length_mm)
+qr_locator.get_z_position(data, qr_code_side_length_mm)
 ```
 Calculates and returns the Z coordinate (vertical axis representing the code’s height) of the QR code in inches.
 - `data` (str): The string of data present in your QR code
 - `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
 #
 ```python
-qr_locator.show_visualization(self, qr_code_side_length_mm, qr_codes=None)
+qr_locator.show_visualization(qr_code_side_length_mm, qr_codes=None)
 ```
 Generates and displays a 2D visualization of the located QR codes in XY and XZ planes.
 - `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
 - `qr_codes` (dict, optional): A dictionary containing QR codes. If not provided, the method will use the QR codes stored in the object.
 #
 ```python
-qr_locator.add_qr_code(self, data, tl, tr, br, bl)
+qr_locator.add_qr_code(data, tl, tr, br, bl)
 ```
 Adds a QR code to the class 
 - `tl` (float): The pixel location pair (x,y) of the top left corner of the QR code
@@ -80,14 +81,14 @@ Adds a QR code to the class
 - `bl` (float): The pixel location pair (x,y) of the bottom left corner of the QR code
 #
 ```python
-qr_locator.get_qr_codes(self)
-qr_locator.get_qr_code(self, data)
+qr_locator.get_qr_codes()
+qr_locator.get_qr_code(data)
 ```
 Returns the dictionary of the locator's code(s)
 - `data` (str): The string of data present in your QR code
 #
 ```python
-qr_locator.get_max_side_length(self, data)
+qr_locator.get_max_side_length(data)
 ```
 Calculates and returns the maximum side length of the QR code in pixels.
 - `data` (str): The string of data present in your QR code
