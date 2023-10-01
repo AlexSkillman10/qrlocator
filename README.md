@@ -1,10 +1,16 @@
 # QRlocator
 
 ## Overview
-This code provides a class named `QRlocator` that allows users to locate QR codes within 3D space given an image. It uses the OpenCV and Pyzbar libraries to scan and decode the QR codes, but you can also use other QR code scanning libraries to get and then add the QR code information to the class using `add_qr_code`. This class mainly provides the `X`, `Y`, and `Z` coordinates of the center point of a code, where `Y` is a horizontal axis parallel to the camera's direction, `X` is a horizontal axis perpendicular to the camera's direction, and `Z` is a vertical axis representing the codes height.
+This package provides a class named `QRlocator` that allows users to get the 3D space location of QR codes within an image. It uses the OpenCV and Pyzbar libraries to scan and decode the QR codes, but you can also use other QR code scanning libraries and add information to the class using `add_qr_code`. This class mainly provides the `X`, `Y`, and `Z` coordinates of the center point of a code, where `Y` is a horizontal axis parallel to the camera's direction, `X` is a horizontal axis perpendicular to the camera's direction, and `Z` is a vertical axis representing the codes height.
 
+add pictures
 
-## How to Use
+## Install
+```
+pip something something
+```
+
+## Quick Start
 
 The creation of the QRlocator class requires 4 parameters. It is very likely that you don't know some of these values, or the values you have are incorrect. This tool can automatically find the 3 best fit values for your camera:
 
@@ -13,44 +19,77 @@ The creation of the QRlocator class requires 4 parameters. It is very likely tha
 - `x_focal_angle_scalar` (float): A scalar value to correct the x-angle calculated from the image.
 - `z_focal_angle_scalar` (float): A scalar value to correct the z-angle calculated from the image.
 ```python
-qr_locator = QRlocator('path_to_image', focal_ratio, x_focal_angle_scalar, z_focal_angle_scalar)
+qr_locator = QRlocator(r'path_to_image', focal_ratio, x_focal_angle_scalar, z_focal_angle_scalar)
+qr_locator.scan_image()
+qr_locator.show_visualization(self, qr_code_side_length_mm)
 ```
 
-### 1. Function
+## Functions
 
-Once you have an image loaded, you can populate the class with the image's QR codes by running:
 ```python
 qr_locator.scan_image()
 ```
-
-To retrieve the dictionary of all QR codes found in your class, run:
+Scans and saves the QR codes from the current image
+#
 ```python
-qr_codes = qr_locator.get_qr_codes()
+qr_locator.modify_image(self, image)
+qr_locator.modify_image_path(self, r'image_path')
 ```
-
-To retrieve a specific QR code by its data, for example a QRcode that when scanned appears as `134564`, run:
-
+Used to modify the locator's current image
+#
 ```python
-qr_code = qr_locator.get_qr_code('134564')
+qr_locator.get_y_position(self, data, qr_code_side_length_mm)
 ```
-
-### 4. Calculating Positions
-To get the positions of the QR codes in 3D space, run the following:
-
+Calculates and returns the Y coordinate (horizontal axis parallel to the camera's direction) of the QR code in inches.
+- `data` (str): The string of data present in your QR code
+- `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
+#
 ```python
-x_position = qr_locator.get_x_position('data', qr_code_size_mm)
-y_position = qr_locator.get_y_position('data', qr_code_size_mm)
-z_position = qr_locator.get_z_position('data', qr_code_size_mm)
+qr_locator.get_x_position(self, data, qr_code_side_length_mm)
 ```
-
-- `data` (str): What appears when you scan the code. This is used to identify the code
-- `qr_code_size_mm` (float): The length of the QR code's sides in mm
-
-### 5. Visualization
-To visualize the positions of the class QR codes in XY and XZ planes, run:
-
+Calculates and returns the X coordinate (horizontal axis perpendicular to the camera's direction) of the QR code in inches.
+- `data` (str): The string of data present in your QR code
+- `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
+#
 ```python
-qr_locator.show_visualization(qr_code_size_mm)
+qr_locator.get_z_position(self, data, qr_code_side_length_mm)
 ```
-Currently this will interpret all QR codes as the same size, you can get around this by entering particular QR codes as a second paramter.
+Calculates and returns the Z coordinate (vertical axis representing the code’s height) of the QR code in inches.
+- `data` (str): The string of data present in your QR code
+- `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
+#
+```python
+qr_locator.show_visualization(self, qr_code_side_length_mm, qr_codes=None)
+```
+Generates and displays a 2D visualization of the located QR codes in XY and XZ planes.
+- `qr_code_side_length_mm` (float): The actual side length of the QR code in millimeters
+- `qr_codes` (dict, optional): A dictionary containing QR codes. If not provided, the method will use the QR codes stored in the object.
+#
+```python
+qr_locator.add_qr_code(self, data, tl, tr, br, bl)
+```
+Adds a QR code to the class 
+- `tl` (float): The pixel location pair (x,y) of the top left corner of the QR code
+- `tr` (float): The pixel location pair (x,y) of the top right corner of the QR code
+- `br` (float): The pixel location pair (x,y) of the botom right corner of the QR code
+- `bl` (float): The pixel location pair (x,y) of the bottom left corner of the QR code
+#
+```python
+qr_locator.get_qr_codes(self)
+qr_locator.get_qr_code(self, data)
+```
+Returns the dictionary of the locator's code(s)
+- `data` (str): The string of data present in your QR code
+#
+```python
+qr_locator.get_max_side_length(self, data)
+```
+Calculates and returns the maximum side length of the QR code in pixels.
+- `data` (str): The string of data present in your QR code
+#
+
+
+
+
+
 
