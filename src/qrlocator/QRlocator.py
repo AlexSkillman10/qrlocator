@@ -24,8 +24,8 @@ class QRlocator:
             if len(points) > 2:
                 self.add_qr_code(qr_code.data.decode('utf-8'), points[0], points[1], points[2], points[3])
     
-    def modify_image(self, image_path):
-        self.image = cv2.imread(image_path)
+    def modify_image(self, image):
+        self.image = cv2.imread(image)
         if self.image is None:
             raise ValueError("Unable to load image")
         else:
@@ -57,28 +57,28 @@ class QRlocator:
                     cv2.norm(points[2], points[3]), 
                     cv2.norm(points[3], points[0])])
         
-    def distance_from_camera_in_inches(self, data, qr_code_size_mm):
-        distance_mm = (qr_code_size_mm * (self.focal_ratio * self.image.shape[1])) / self.get_max_side_length(data)
+    def distance_from_camera_in_inches(self, data, qr_code_side_length_mm):
+        distance_mm = (qr_code_side_length_mm * (self.focal_ratio * self.image.shape[1])) / self.get_max_side_length(data)
         return distance_mm / 25.4
     
-    def get_y_position(self, data, qr_code_size_mm):
-        return self.distance_from_camera_in_inches(data, qr_code_size_mm)
+    def get_y_position(self, data, qr_code_side_length_mm):
+        return self.distance_from_camera_in_inches(data, qr_code_side_length_mm)
     
-    def get_x_position(self, data, qr_code_size_mm):
-        distance_inches = self.get_y_position(data, qr_code_size_mm)
+    def get_x_position(self, data, qr_code_side_length_mm):
+        distance_inches = self.get_y_position(data, qr_code_side_length_mm)
         points = self.get_qr_code(data)
         delta_x = sum([point[0] for point in points]) / len(points) - self.x_img_center
         x_angle = math.degrees(math.atan(delta_x / self.image.shape[1]))
         return math.tan(math.radians(x_angle)) * distance_inches * self.x_focal_angle_scalar
 
-    def get_z_position(self, data, qr_code_size_mm):
-        distance_inches = self.get_y_position(data, qr_code_size_mm)
+    def get_z_position(self, data, qr_code_side_length_mm):
+        distance_inches = self.get_y_position(data, qr_code_side_length_mm)
         points = self.get_qr_code(data)
         delta_z = sum([point[1] for point in points]) / len(points) - self.y_img_center
         z_angle = -math.degrees(math.atan(delta_z / self.image.shape[1]))
         return math.tan(math.radians(z_angle)) * distance_inches * self.z_focal_angle_scalar
     
-    def show_visualization(self, qr_code_size_mm, qr_codes = None):
+    def show_visualization(self, qr_code_side_length_mm, qr_codes = None):
         if qr_codes is None:
             qr_codes = self.qr_codes
 
@@ -87,8 +87,8 @@ class QRlocator:
         axs[0].axhline(0, color='k')
         axs[0].scatter(0, 0, c='r', label='Camera')
         for data, qr_code in qr_codes.items():
-            x = self.get_x_position(data, qr_code_size_mm) / 12
-            y = self.get_y_position(data, qr_code_size_mm) / 12
+            x = self.get_x_position(data, qr_code_side_length_mm) / 12
+            y = self.get_y_position(data, qr_code_side_length_mm) / 12
             axs[0].scatter(x, y, label=f"QR Code: {data}")
             axs[0].annotate(data, (x, y), textcoords="offset points", xytext=(0, -10), ha='center')
         axs[0].set_xlabel('X (feet)')
@@ -98,8 +98,8 @@ class QRlocator:
         axs[0].set_title('QR Code Location in XY Plane')
 
         for data, qr_code in qr_codes.items():
-            x = self.get_x_position(data, qr_code_size_mm) / 12
-            z = self.get_z_position(data, qr_code_size_mm) / 12
+            x = self.get_x_position(data, qr_code_side_length_mm) / 12
+            z = self.get_z_position(data, qr_code_side_length_mm) / 12
             axs[1].scatter(x, z, label=f"QR Code: {data}")
             axs[1].annotate(data, (x, z), textcoords="offset points", xytext=(0, -10), ha='center')
         axs[1].set_xlabel('X (feet)')
